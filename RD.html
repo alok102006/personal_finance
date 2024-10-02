@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RD Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height:50px;
+            margin-right: 10px;
+        }
+        .calculator {
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-left: 10rem;
+            margin-right: 10rem;
+        }
+        .calculator h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .input-box {
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rupees-amount {
+            color:#28a745 !important;
+            font-weight: bold;
+        }
+        .full-form {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            margin-right: 50px;
+            margin-top: -100px;
+            margin-bottom: 100px;
+            height: 100%;
+        }
+        @media (max-width:768px) {
+            .calculator {
+                border-radius: 10px;
+                padding: 2rem;
+                margin-top: 2rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="financeclub.jpeg" class="rounded-circle">
+                Finance Club
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tools.html">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ourteam.html">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loginpage.html" id="loginBtn">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="calculator mt-5">
+        <h2 class="text-center">RD Calculator</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-box">
+                    <h3>Input</h3>
+                    <div class="mb-3">
+                        <label for="monthlyInvestment" class="form-label">Monthly Investment (<span class="rupees-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="monthlyInvestment" value="15000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="interestRate" class="form-label">Annual Interest Rate (%)</label>
+                        <input type="number" class="form-control" id="interestRate" value="5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="timePeriod" class="form-label">Time Period (Years)</label>
+                        <input type="number" class="form-control" id="timePeriod" value="10">
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateRD()">Calculate</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="output-box">
+                    <h3>Output</h3>
+                    <p>Invested Amount: <span class="rupees-amount">₹</span><span id="investedAmount" class="output-value">0</span></p>
+                    <p>Estimated Returns: <span class="rupees-amount">₹</span><span id="estimatedReturns" class="output-value">0</span></p>
+                    <p>Maturity Value: <span class="rupees-amount">₹</span><span id="maturityValue" class="output-value">0</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="chart-container">
+                <canvas id="rdChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="full-form text-center">
+            <p><strong>RD:</strong> Recurring Deposit Calculator</p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let rdChart;
+
+        function calculateRD() {
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12; // Monthly interest rate
+            const timePeriod = parseFloat(document.getElementById('timePeriod').value) * 12; // Total months
+
+            let totalInvestment = monthlyInvestment * timePeriod;
+            let maturityValue = 0;
+
+            for (let i = 0; i < timePeriod; i++) {
+                maturityValue += monthlyInvestment;
+                maturityValue *= (1 + interestRate);
+            }
+
+            const estimatedReturns = maturityValue - totalInvestment;
+
+            document.getElementById('investedAmount').textContent = totalInvestment.toFixed(2);
+            document.getElementById('estimatedReturns').textContent = estimatedReturns.toFixed(2);
+            document.getElementById('maturityValue').textContent = maturityValue.toFixed(2);
+
+            updateChart(totalInvestment, maturityValue, timePeriod);
+        }
+
+        function updateChart(totalInvestment, maturityValue, totalMonths) {
+            const ctx = document.getElementById('rdChart').getContext('2d');
+            const labels = Array.from({length: totalMonths / 12 + 1}, (_, i) => i);
+            const investmentData = labels.map(year => year * (totalInvestment / (totalMonths / 12)));
+            const maturityData = labels.map(year => {
+                let value = 0;
+                for (let i = 0; i < year * 12; i++) {
+                    value += totalInvestment / totalMonths;
+                    value *= (1 + (parseFloat(document.getElementById('interestRate').value) / 100 / 12));
+                }
+                return value;
+            });
+
+            if (rdChart) {
+                rdChart.destroy();
+            }
+
+            rdChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Invested Amount',
+                        data: investmentData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }, {
+                        label: 'Maturity Value',
+                        data: maturityData,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount (₹)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            ['monthlyInvestment', 'interestRate', 'timePeriod'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calculateRD);
+            });
+            calculateRD();
+        });
+    </script>
+</body>
+</html>

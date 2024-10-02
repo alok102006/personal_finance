@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSY Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height:50px;
+            margin-right: 10px;
+        }
+        .calculator {
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-left: 10rem;
+            margin-right: 10rem;
+        }
+        .calculator h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .input-box {
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rupees-amount {
+            color:#28a745 !important;
+            font-weight: bold;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: -2rem;
+            margin-right: 80px;
+            width: 70%;
+            max-width: 400px;
+            margin: 20px auto;
+            margin-right: 20px;
+            margin-top: -160px;
+        }
+        @media (max-width:768px) {
+            .calculator {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="financeclub.jpeg" class="rounded-circle">
+                Finance Club
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tools.html">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ourteam.html">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loginpage.html" id="loginBtn">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="calculator mt-5">
+        <h2 class="text-center">Sukanya Samriddhi Yojana (SSY) Calculator</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-box">
+                    <h3>Input</h3>
+                    <div class="mb-3">
+                        <label for="ssyStartYear" class="form-label">Start Year</label>
+                        <select class="form-select" id="ssyStartYear">
+                            
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ssyYearlyInvestment" class="form-label">Yearly Investment (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="ssyYearlyInvestment" value="100000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ssyInterestRate" class="form-label">Annual Interest Rate (%)</label>
+                        <input type="number" class="form-control" id="ssyInterestRate" value="5" step="0.1">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="output-box">
+                    <h3>Output</h3>
+                    <p>Total Investment (till 2030): <span class="rupees-amount">₹</span><span id="ssyTotalInvestment" class="output-value">1500000</span></p>
+                    <p>Total Interest (over 21 years): <span class="rupees-amount">₹</span><span id="ssyTotalInterest" class="output-value">1536320</span></p>
+                    <p>Maturity Value (in 2036): <span class="rupees-amount">₹</span><span id="ssyMaturityValue" class="output-value">3036320</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="chart-container">
+                <canvas id="ssyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let ssyChart;
+
+        function populateStartYearDropdown() {
+            const startYearSelect = document.getElementById('ssyStartYear');
+            const currentYear = new Date().getFullYear();
+            for (let year = 2015; year <= currentYear; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                startYearSelect.appendChild(option);
+            }
+            startYearSelect.value = '2015';  // Set default value to 2015
+        }
+
+        function calculateSSY() {
+            const startYear = parseInt(document.getElementById('ssyStartYear').value);
+            const yearlyInvestment = parseFloat(document.getElementById('ssyYearlyInvestment').value);
+            const interestRate = parseFloat(document.getElementById('ssyInterestRate').value) / 100;
+
+            const currentYear = new Date().getFullYear();
+            const maturityYear = startYear + 21;
+            const investmentYears = Math.min(2030 - startYear + 1, 15);  // Investment for 15 years or until 2030, whichever is earlier
+
+            let totalInvestment = yearlyInvestment * investmentYears;
+            let totalAmount = 0;
+
+            const chartData = [];
+
+            for (let year = startYear; year <= maturityYear; year++) {
+                if (year <= 2030 && year < startYear + 15) {
+                    totalAmount += yearlyInvestment;
+                }
+                totalAmount *= (1 + interestRate);
+                chartData.push({ year: year, amount: totalAmount });
+            }
+
+            const totalInterest = totalAmount - totalInvestment;
+
+            document.getElementById('ssyTotalInvestment').textContent = totalInvestment.toFixed(2);
+            document.getElementById('ssyTotalInterest').textContent = totalInterest.toFixed(2);
+            document.getElementById('ssyMaturityValue').textContent = totalAmount.toFixed(2);
+
+            updateChart(chartData);
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('ssyChart').getContext('2d');
+
+            if (ssyChart) {
+                ssyChart.data.labels = data.map(d => d.year);
+                ssyChart.data.datasets[0].data = data.map(d => d.amount);
+                ssyChart.update();
+            } else {
+                ssyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.year),
+                        datasets: [{
+                            label: 'SSY Balance',
+                            data: data.map(d => d.amount),
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Balance (₹)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Year'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        const debouncedCalculateSSY = debounce(calculateSSY);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateStartYearDropdown();
+
+            const inputs = ['ssyStartYear', 'ssyYearlyInvestment', 'ssyInterestRate'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                element.addEventListener('input', debouncedCalculateSSY);
+                element.addEventListener('change', calculateSSY);
+            });
+
+            calculateSSY();
+        });
+    </script>

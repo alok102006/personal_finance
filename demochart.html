@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FD Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        /* ... (previous CSS remains unchanged) ... */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height:50px;
+            margin-right: 10px;
+        }
+        .welcome {
+            background-color: #1a1a1a;
+            padding: 3rem 0;
+        }
+        .join-button {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: #ffd700;
+            color: black;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: glow 2s infinite;
+        }
+        .join-button:hover {
+            background-color: #ffec8b;
+            color: black;
+            transform: scale(1.05);
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ffd700; }
+            50% { box-shadow: 0 0 20px #ffec8b; }
+            100% { box-shadow: 0 0 5px #ffd700; }
+        }
+        .calculator {
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .calculator h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .input-box {
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rupees-amount {
+            color:#28a745 !important;
+            font-weight: bold;
+        }
+        .full-form {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        .fd-information p {
+            font-weight: lighter;
+        }
+        .fd-information ul {
+            font-weight: lighter;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fixed Deposit Calculator</h1>
+    
+    <div class="calculator">
+        <div class="form-group">
+            <label for="principal">Principal Amount (₹):</label>
+            <input type="number" id="principal" min="0" step="1000" value="10000" required>
+        </div>
+        <div class="form-group">
+            <label for="interestRate">Interest Rate (% per annum):</label>
+            <input type="number" id="interestRate" min="0" max="20" step="0.1" value="5" required>
+        </div>
+        <div class="form-group">
+            <label for="tenure">Tenure (Years):</label>
+            <input type="number" id="tenure" min="1" max="30" step="1" value="5" required>
+        </div>
+        
+        <div class="results">
+            <p>Maturity Amount: <span id="maturityAmount"></span></p>
+            <p>Total Interest Earned: <span id="totalInterest"></span></p>
+        </div>
+    </div>
+
+    <canvas id="fdChart"></canvas>
+
+    <script>
+        let fdChart;
+
+        function calculateFD() {
+            const principal = parseFloat(document.getElementById('principal').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const tenure = parseInt(document.getElementById('tenure').value) || 0;
+
+            const maturityAmount = principal * Math.pow(1 + interestRate / 100, tenure);
+            const totalInterest = maturityAmount - principal;
+
+            document.getElementById('maturityAmount').textContent = '₹ ' + maturityAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            document.getElementById('totalInterest').textContent = '₹ ' + totalInterest.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+
+            updateFDChart(principal, interestRate, tenure);
+        }
+
+        function updateFDChart(principal, interestRate, tenure) {
+            const ctx = document.getElementById('fdChart').getContext('2d');
+            
+            const chartData = {
+                labels: [...Array(tenure + 1).keys()].map(year => `Year ${year}`),
+                datasets: [{
+                    label: 'Maturity Value',
+                    data: [...Array(tenure + 1)].map((_, i) => principal * Math.pow(1 + interestRate / 100, i)),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                }]
+            };
+
+            const chartOptions = {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => `₹ ${value.toLocaleString()}`
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'FD Growth Over Time'
+                    }
+                }
+            };
+
+            if (fdChart) {
+                fdChart.data = chartData;
+                fdChart.options = chartOptions;
+                fdChart.update();
+            } else {
+                fdChart = new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: chartOptions
+                });
+            }
+        }
+
+        // Add event listeners to inputs
+        document.getElementById('principal').addEventListener('input', calculateFD);
+        document.getElementById('interestRate').addEventListener('input', calculateFD);
+        document.getElementById('tenure').addEventListener('input', calculateFD);
+
+        // Initial calculation
+        calculateFD();
+    </script>
+</body>
+</html>

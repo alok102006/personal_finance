@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- [Previous head content remains unchanged] -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAGR Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height:50px;
+            margin-right: 10px;
+        }
+        .welcome {
+            background-color: #1a1a1a;
+            padding: 3rem 0;
+        }
+        .join-button {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: #ffd700;
+            color: black;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: glow 2s infinite;
+        }
+        .join-button:hover {
+            background-color: #ffec8b;
+            color: black;
+            transform: scale(1.05);
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ffd700; }
+            50% { box-shadow: 0 0 20px #ffec8b; }
+            100% { box-shadow: 0 0 5px #ffd700; }
+        }
+        .calculator {
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-left: 10rem;
+            margin-right: 10rem;
+        }
+        .calculator h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .input-box {
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rupees-amount {
+            color:#28a745 !important;
+            font-weight: bold;
+        }
+        .full-form {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        @media (max-width:768px) {
+            .calculator {
+                border-radius: 10px;
+                padding: 2rem;
+                margin-top: 2rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="financeclub.jpeg" class="rounded-circle">
+                Finance Club
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tools.html">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ourteam.html">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loginpage.html" id="loginBtn">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="calculator mt-5">
+        <h2 class="text-center">HRA Calculator</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-box">
+                    <h3>Input</h3>
+                    <div class="mb-3">
+                        <label for="hraBasicSalary" class="form-label">Basic Salary (Annual) (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="hraBasicSalary" value="360000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hraDearness" class="form-label">Dearness Allowance (Annual) (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="hraDearness" value="108000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hraCommission" class="form-label">Commission (Annual) (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="hraCommission" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hraReceived" class="form-label">HRA Received (Annual) (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="hraReceived" value="108000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hraRent" class="form-label">Annual Rent (<span class="dollar-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="hraRent" value="240000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hraMetroCity" class="form-label">Do you live in Delhi, Mumbai, Kolkata or Bangalore?</label>
+                        <select class="form-select" id="hraMetroCity">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateHRA()">Calculate</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="output-box">
+                    <h3>Output</h3>
+                    <p>HRA Received: <span class="rupees-amount">₹</span><span id="hraReceivedOutput" class="output-value">108000</span></p>
+                    <p>Exempted HRA: <span class="rupees-amount">₹</span><span id="hraExempted" class="output-value">108000</span></p>
+                    <p>Taxable HRA: <span class="rupees-amount">₹</span><span id="hraTaxable" class="output-value">0</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="full-form text-center">
+            <p><strong>HRA:</strong>House Rent Allowance Calculator</p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function calculateHRA() {
+    const basicSalary = parseFloat(document.getElementById('hraBasicSalary').value);
+    const dearness = parseFloat(document.getElementById('hraDearness').value);
+    const commission = parseFloat(document.getElementById('hraCommission').value);
+    const hraReceived = parseFloat(document.getElementById('hraReceived').value);
+    const annualRent = parseFloat(document.getElementById('hraRent').value);
+    const isMetroCity = document.getElementById('hraMetroCity').value === 'yes';
+
+    const salaryForHRA = basicSalary + dearness + commission;
+    const rentPaidExcessOf10PercentSalary = annualRent - (0.1 * salaryForHRA);
+    const percentageOfSalary = isMetroCity ? 0.5 * salaryForHRA : 0.4 * salaryForHRA;
+
+    const exemptedHRA = Math.min(
+        hraReceived,
+        rentPaidExcessOf10PercentSalary,
+        percentageOfSalary
+    );
+
+    const taxableHRA = Math.max(0, hraReceived - exemptedHRA);
+
+    document.getElementById('hraReceivedOutput').textContent = hraReceived.toFixed(2);
+    document.getElementById('hraExempted').textContent = exemptedHRA.toFixed(2);
+    document.getElementById('hraTaxable').textContent = taxableHRA.toFixed(2);
+}
+
+// Add event listeners for Enter key in HRA calculator
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing event listeners remain unchanged
+
+    // HRA Calculator
+    const hraInputs = ['hraBasicSalary', 'hraDearness', 'hraCommission', 'hraReceived', 'hraRent'];
+    hraInputs.forEach(id => {
+        document.getElementById(id).addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                calculateHRA();
+            }
+        });
+    });
+
+    // Add change event listener for the metro city dropdown
+    document.getElementById('hraMetroCity').addEventListener('change', calculateHRA);
+});
+    </script>

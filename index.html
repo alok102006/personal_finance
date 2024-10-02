@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Club</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        body {
+            background-color: black;
+            color: white;
+            font-weight: bolder;
+            
+        }
+        .navbar {
+            background-color: black !important;
+            color: white;
+        }
+        .navbar-brand img {
+            width: 60px;
+            height: 60px;
+            margin-right: 20px;
+            background-color: black;
+        }
+        .welcome {
+            background-color: white;
+            padding: 3rem 0;
+            color: black;
+            text-align: left;
+            
+            
+            
+            
+        }
+        .one-percent-club-button {
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: #ffd700; /* One Percent Club color */
+    color: black;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    animation: glow 2s infinite;
+}
+
+.one-percent-club-button:hover {
+    background-color: #ffec8b; /* Darker One Percent Club color */
+    color: white;
+    transform: scale(1.05);
+}
+.welcome img {
+    margin-top: -316px;
+    align-items: start;
+    float: right;
+    position: relative;
+    top: -20px;
+    margin-right: -48px;
+    margin-bottom: -250px;
+    width: auto;
+}
+.welcome h1 {
+    font-weight: bold;
+    height: auto;
+    max-width: 100;
+    margin-top: 2rem;
+}
+#tools {
+    background-color: black;
+    color: white;
+    padding: 3rem 0;
+}
+        .tool-box {
+            background-color:#1a1a1a !important;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        .tool-box:hover {
+            transform: scale(1.05);
+        }
+        .tool-box h2, .tool-box p {
+            color: white;
+        }
+        .tool-box img {
+            width: 300px;
+            height: 600px;
+            object-fit: cover;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+        .legal {
+            line-break: normal;
+            color: gray
+        }
+        @keyframes slideUpBlur {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+                filter: blur(5px);
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        .animate-slide-up-blur {
+            animation: slideUpBlur 1s ease-out 0.2s forwards;
+        }
+
+        .animate-slide-up-blur-delay-1 {
+            animation: slideUpBlur 1s ease-out 0.2s forwards;
+        }
+
+        .animate-slide-up-blur-delay-2 {
+            animation: slideUpBlur 1s ease-out 0.2s forwards;
+        }
+        .animate-slide-up-blur-delay-3 {
+            animation: slideUpBlur 1s ease-out 1s forwards;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ffd700; }
+            50% { box-shadow: 0 0 20px #ffec8b; }
+            100% { box-shadow: 0 0 5px #ffd700; }
+        }
+        .join-button {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: #ffd700;
+            color: black;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: glow 2s infinite;
+        }
+        .join-button:hover {
+            background-color: #ffec8b;
+            color: black;
+            transform: scale(1.05);
+        }
+     
+        .image {
+            text-align: right;
+            margin-top: -50px;
+            margin-bottom: -30px;
+        }
+        .contact-form {
+            background-color: black;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 3rem;
+            margin-left: 50px;
+            margin-right: 50px;
+            border-radius: 10px;
+        }
+        .contact {
+            background-color: black;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+        }
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        #captcha-canvas {
+            margin-right: 1rem;
+        }
+        .btn-primary {
+            background-color: black;
+            color: gold;
+            border: gold;
+        }
+        .btn-primary:hover{
+            background-color: gold;
+        }
+        .btn-secondary {
+            color: #ffd700;
+            background-color: black;
+            border-radius: gold;
+
+        }
+        .btn-secondary:hover {
+            background-color: gold;
+            border: 2px solid gold;
+        }
+        .section-divider {
+            border-top: 1px solid #ffd700;
+            margin: 3rem 0;
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .welcome h1 {
+                font-size: 1.8rem;
+                font-weight: bold;
+                height: auto;
+                max-width: 100;
+                margin-top: 2rem;
+
+            }
+            .welcome img {
+                margin-top: 2rem;
+                margin-right: -10px;
+                margin-left: -100px;
+                margin-bottom: -20px;
+            }
+            .tool-box {
+                margin-bottom: 1rem;
+            }
+        }
+        
+        
+
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="financeclub.jpeg" alt="Finance Club Logo" class="rounded-circle">
+                <strong>Finance Club</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tools.html">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ourteam.html">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loginpage.html" id="loginBtn">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="welcome" id="home">
+        <div class="container">
+            <h1 data-aos="fade-up" class="animate-slide-up-blur">
+            <h1 class="animate-slide-up-blur"><strong>Enabling others to achieve</strong></h1>
+            <h1 class="animate-slide-up-blur-delay-1"><strong> Personal</strong></h1>
+            <h1 class="animate-slide-up-blur-delay-2"><strong>Goals and Independence.</strong></h1>
+            <p data-aos="fade-up" class="banner-pr aos-init aos-animate animate-slide-up-blur">Learn. Implement. Experience everything finance - in One Lifetime</p>
+            <a href="loginpage.html" class="one-percent-club-button mt-3 animate-slide-up-blur">Join Club</a>
+        
+                <img src="newwelcome.jpeg" loading="lazy" class="animate-slide-up-blur">
+                
+                <br></br>
+                
+                <br></br>
+                <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <h1 class="text-center mb-5" class="hidden"><strong>ONE STOP SOLUTION</strong></h1>
+            <h4 class="text-center" class="hidden">A one stop shop for all your financial problems,</h4><h4 class="text-center"> and helping you implement all your learnings right from </h4><h4 class="text-center">saving to investing.</h4>
+        
+
+        </div>
+    </div>
+    
+    
+    <div class="container my-5" id="tools">
+        <h2 class="text-center mb-5"> 10+ Financial Planning Tools</h2>
+        <p class="text-center animate-slide-up-blur-delay-3">Customise your path to financial freedom by using proprietary financial planning tools.</p>
+
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <div class="tool-box text-center">
+                    <h2><strong>Planning tools</strong></h2>
+                    <p>Plan and implement your financial goals with our proprietary finance tools.</p>
+                    <img src="img fd.jpg" alt="FIRE Calculator" class="oval">
+
+                    
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tool-box text-center">
+                    <h2><strong>F.I.R.E Tool</strong></h2>
+                    <p>Calculate your Financial Independence Retire Early (F.I.R.E) Number.</p>
+                    <img src="fire ig.jpg" alt="SIP Calculator" class="rounded-oval">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tool-box text-center">
+                    <h2><strong>More Tools</strong></h2>
+                    <p>Use over 10+ calculators and tools that help you with every financial decision.</p>
+                    <img src="moretools.PNG" alt="FD Calculator" class="rounded-oval">
+                </div>
+            </div>
+        </br>
+    </br>
+    <br>
+    <br>
+    
+    
+        <div class=" text-left about us">
+            <div class="section-divider">
+    <h2><strong>ABOUT US</strong></h2>
+    <br>
+    <br>
+    <p>Personal finance is the practical management of your money. It involves budgeting, saving, investing, and planning for your financial future. By understanding and implementing sound financial principles, you can make informed decisions, reduce stress, and achieve financial freedom.
+
+    </p>
+    <p>Personal finance is the art of managing your money effectively. It involves budgeting, saving, investing, and planning for your financial future. By understanding and implementing sound financial principles, you can make informed decisions, reduce stress, and achieve financial freedom. Personal finance encompasses a wide range of activities, from tracking your income and expenses to setting financial goals, managing debt, and planning for retirement. By taking a proactive approach to your finances, you can improve your overall well-being and secure a brighter future.
+
+    </p>
+    
+
+         </div>
+         <div class="section-divider">
+         <div class="contact">
+            <br>
+            <br>
+            <h1 class="text-center"><strong>Contact Us</strong></h1>
+            
+            <div class="contact-form">
+                <form id="contact-form" onsubmit="return validateForm()">
+                    <div class="text-center col-md-9.5">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div class="text-center col-md-9.5">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="text-center col-md-9.5">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="4" required></textarea>
+                    </div>
+                    <div class="text-center col-md-9.5">
+                        <label for="captcha" class="form-label">CAPTCHA</label>
+                        <div class="captcha-container">
+                            <canvas id="captcha-canvas" width="120" height="40"></canvas>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="generateCaptcha()">Refresh</button>
+                        </div>
+                        <input type="text" class="form-control" id="captcha-input" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Send Email</button>
+                </form>
+            </div>
+            </div>
+        </div>
+
+    
+            
+    
+    <div class=" py-5" id="about">
+        <div class="section-divider">
+        <div class="container">
+            <br>
+            <br>
+            <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item bg-dark text-white">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-black text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            What is the Finance Club?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            The Finance Club is a community dedicated to helping individuals achieve financial independence through education and tools.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-dark text-white">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-black text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            How can I join the Finance Club?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You can join by signing up on our website or attending one of our local meetups.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-dark text-white">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-black text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Are the financial planning tools free?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, all the tools on our website are free for members to use.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center legal">
+    © Finance Club 2024
+All Rights Reserved. Finance Club Ventures Pvt. Ltd.
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+     let captchaText = '';
+
+function generateCaptcha() {
+    const canvas = document.getElementById('captcha-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '30px Arial';
+    ctx.fillStyle = '#333';
+    captchaText = Math.random().toString(36).substring(2, 8);
+    ctx.fillText(captchaText, 10, 30);
+}
+
+function validateForm() {
+    const captchaInput = document.getElementById('captcha-input').value;
+    if (captchaInput !== captchaText) {
+        alert('CAPTCHA is incorrect. Please try again.');
+        return false;
+    }
+    // Here you would typically send the form data to a server
+    alert('Email sent successfully!');
+    return false; // Prevent form submission for this example
+}
+
+// Call generateCaptcha on page load
+window.onload = function() {
+    if (typeof calculateFD === 'function') {
+        calculateFD();
+    }
+    generateCaptcha();
+};
+    AOS.init();
+</script>
+</body>
+</html

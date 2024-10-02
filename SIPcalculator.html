@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .calculator {
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-left: 10rem;
+            margin-right: 10rem;
+        }
+        .calculator h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .input-box {
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .output-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rupees-amount {
+            color: #28a745 !important;
+            font-weight: bold;
+        }
+        .full-form {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: -2rem;
+            margin-right: 80px;
+            width: 70%;
+            max-width: 400px;
+            margin: 20px auto;
+            margin-right: 20px;
+            margin-top: -200px;
+        }
+        @media (max-width: 768px) {
+            .calculator {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="financeclub.jpeg" class="rounded-circle">
+                Finance Club
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tools.html">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ourteam.html">Our Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loginpage.html" id="loginBtn">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="calculator mt-5">
+        <h2 class="text-center">SIP Calculator</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-box">
+                    <h3>Input</h3>
+                    <div class="mb-3">
+                        <label for="sipMethod" class="form-label">SIP Method</label>
+                        <select class="form-select" id="sipMethod">
+                            <option value="normal">Normal</option>
+                            <option value="stepup">Step-up</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="monthlySIP" class="form-label">Monthly SIP Amount (<span class="rupees-amount">₹</span>)</label>
+                        <input type="number" class="form-control" id="monthlySIP" value="5000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="expectedReturn" class="form-label">Expected Return (% per year)</label>
+                        <input type="number" class="form-control" id="expectedReturn" value="12">
+                    </div>
+                    <div class="mb-3">
+                        <label for="timePeriod" class="form-label">Time Period (years)</label>
+                        <input type="number" class="form-control" id="timePeriod" value="4">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="output-box">
+                    <h3>Output</h3>
+                    <p>Invested Amount: <span class="rupees-amount">₹</span><span id="investedAmount" class="output-value">0</span></p>
+                    <p>Returns Generated: <span class="rupees-amount">₹</span><span id="returnsGenerated" class="output-value">0</span></p>
+                    <p>Total Amount: <span class="rupees-amount">₹</span><span id="totalAmount" class="output-value">0</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="chart-container">
+                <canvas id="sipChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="full-form text-center">
+            <p><strong>SIP:</strong> Systematic Investment Plan</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let sipChart;
+
+        function calculateSIP() {
+            const sipMethod = document.getElementById('sipMethod').value;
+            const monthlySIP = parseFloat(document.getElementById('monthlySIP').value);
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100 / 12;
+            const timePeriod = parseInt(document.getElementById('timePeriod').value);
+
+            let totalInvestment = 0;
+            let totalAmount = 0;
+            const chartData = [];
+
+            for (let i = 1; i <= timePeriod * 12; i++) {
+                let currentSIP = monthlySIP;
+                if (sipMethod === 'stepup' && i % 12 === 0) {
+                    currentSIP *= 1.1; // 10% step-up every year
+                }
+
+                totalInvestment += currentSIP;
+                totalAmount = (totalAmount + currentSIP) * (1 + expectedReturn);
+
+                if (i % 12 === 0) {
+                    chartData.push({
+                        year: i / 12,
+                        investedAmount: totalInvestment,
+                        totalAmount: totalAmount
+                    });
+                }
+            }
+
+            const returnsGenerated = totalAmount - totalInvestment;
+
+            document.getElementById('investedAmount').textContent = totalInvestment.toFixed(2);
+            document.getElementById('returnsGenerated').textContent = returnsGenerated.toFixed(2);
+            document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
+
+            updateChart(chartData);
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('sipChart').getContext('2d');
+            
+            const chartData = {
+                labels: data.map(d => `Year ${d.year}`),
+                datasets: [{
+                    label: 'Invested Amount',
+                    data: data.map(d => d.investedAmount),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Total Gains',
+                    data: data.map(d => d.totalAmount - d.investedAmount),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            if (sipChart) {
+                sipChart.data = chartData;
+                sipChart.update();
+            } else {
+                sipChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Year'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount (₹)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₹' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'SIP Growth Over Time'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += '₹' + context.parsed.y.toLocaleString();
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        const debouncedCalculateSIP = debounce(calculateSIP);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = ['sipMethod', 'monthlySIP', 'expectedReturn', 'timePeriod'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                element.addEventListener('input', debouncedCalculateSIP);
+                element.addEventListener('change', calculateSIP);
+            });
+
+            calculateSIP();
+        });
+    </script>
+</body>
+</html>
