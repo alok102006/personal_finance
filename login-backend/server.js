@@ -19,25 +19,30 @@ mongoose
 .catch((err) => console.error("MongoDB connection error:", err));
 
 // Define a User schema
+// Define a User schema
 const userSchema = new mongoose.Schema({
+  name: { type: String, required: true }, // New field for storing user name
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);
 
-// Route: User registration (save email/password to MongoDB)
+
+// Route: User registration (save name, email, and password to MongoDB)
 app.post("/register", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body; // Extract `name`, `email`, and `password` from the request body
 
   try {
-    const newUser = new User({ email, password });
-    await newUser.save();
+    // Create a new user with name, email, and password
+    const newUser = new User({ name, email, password });
+    await newUser.save(); // Save the user data into MongoDB
     res.status(201).send("User registered successfully");
   } catch (error) {
     res.status(400).send("Error registering user: " + error.message);
   }
 });
+
 
 // Route: User login (validate email/password)
 app.post("/login", async (req, res) => {
