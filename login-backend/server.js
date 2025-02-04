@@ -15,13 +15,12 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-.then(() => console.log("Connected to MongoDB"))
-.catch((err) => console.error("MongoDB connection error:", err));
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Define a User schema
-// Define a User schema
+
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true }, // New field for storing user name
+  name: { type: String, required: true }, 
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
