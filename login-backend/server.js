@@ -130,7 +130,38 @@ app.get("/transactions", authenticateToken, async (req, res) => {
     }
 });
 
-// Chatbot Endpoint
+// Finance-related keywords and topics for filtering
+const financeKeywords = [
+    'money', 'finance', 'budget', 'invest', 'investment', 'stock', 'bond', 'fund',
+    'saving', 'expense', 'income', 'debt', 'credit', 'loan', 'mortgage', 'tax',
+    'retirement', 'ira', '401k', 'bank', 'account', 'interest', 'dividend',
+    'portfolio', 'asset', 'liability', 'cash', 'flow', 'financial', 'economy',
+    'economic', 'market', 'trading', 'mutual', 'etf', 'equity', 'capital',
+    'return', 'risk', 'insurance', 'planning', 'wealth', 'net worth', 'salary',
+    'wage', 'paycheck', 'spending', 'emergency fund', 'roth', 'traditional',
+    'crypto', 'cryptocurrency', 'bitcoin', 'ethereum', 'blockchain', 'inflation',
+    'deflation', 'recession', 'bear market', 'bull market', 'diversification',
+    'allocation', 'compound interest', 'apr', 'apy', 'yield', 'transaction',
+    'payment', 'fee', 'charge', 'bill', 'cost', 'price', 'value', 'profit', 'loss',
+    'balance', 'dollar', 'euro', 'currency', 'exchange rate', 'personal finance','sip',
+    'financial literacy', 'financial advisor', 'financial planning', 'financial goals',
+];
+
+// Function to check if a message is related to finance
+function isFinanceRelated(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for finance keywords
+    for (const keyword of financeKeywords) {
+        if (lowerMessage.includes(keyword.toLowerCase())) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// Modified Chatbot Endpoint with finance topic filtering
 app.post("/chatbot", async (req, res) => {
     try {
         console.log("📩 Received request at /chatbot");
@@ -143,11 +174,26 @@ app.post("/chatbot", async (req, res) => {
             return res.status(400).json({ reply: "Message cannot be empty" });
         }
 
+        // Check if the message is finance-related
+        if (!isFinanceRelated(userMessage)) {
+            console.log("⚠️ Non-finance question rejected");
+            return res.json({
+                reply: "I'm your personal finance assistant and can only answer questions related to personal finance, budgeting, investing, and other financial topics. How can I help you with your finances today?"
+            });
+        }
+
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
         console.log("🚀 Model initialized");
 
+        // Create a finance-specific prompt
+        const financePrompt = `You are exclusively a personal finance assistant. Answer the following finance-related question 
+                               in a helpful and informative way. Focus only on personal finance topics like budgeting, saving, 
+                               investing, debt management, retirement planning, taxes, and financial planning.
+                               
+                               Question: ${userMessage}`;
+
         const chat = await model.startChat();
-        const result = await chat.sendMessage(userMessage);
+        const result = await chat.sendMessage(financePrompt);
         console.log("💬 Gemini API Response:", JSON.stringify(result, null, 2));
 
         const responseText = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't generate a response.";
