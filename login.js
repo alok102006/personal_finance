@@ -10,6 +10,7 @@ const totalIncome = document.getElementById('totalIncome');
 const totalExpenses = document.getElementById('totalExpenses');
 const balance = document.getElementById('balance');
 const transactionList = document.getElementById('transactionList');
+const financeChartCanvas = document.getElementById('financeChart');
 
 // API URLs
 const API_URL = 'http://localhost:5000';
@@ -377,6 +378,61 @@ if (financeForm) {
   });
 } else {
   console.error('Finance form element not found in DOM');
+}
+let financeChart; // Store the chart instance globally
+
+function updateFinancialSummary(transactions) {
+  console.log('Updating financial summary with', transactions.length, 'transactions');
+  
+  if (!totalIncome || !totalExpenses || !balance) {
+    console.error('Financial summary elements not found in DOM');
+    return;
+  }
+  
+  let incomeSum = 0;
+  let expenseSum = 0;
+  
+  transactions.forEach(transaction => {
+    if (transaction.type === 'income') {
+      incomeSum += parseFloat(transaction.amount);
+    } else {
+      expenseSum += parseFloat(transaction.amount);
+    }
+  });
+
+  const balanceAmount = incomeSum - expenseSum;
+
+  totalIncome.textContent = formatCurrency(incomeSum);
+  totalExpenses.textContent = formatCurrency(expenseSum);
+  balance.textContent = formatCurrency(balanceAmount);
+
+  // Update the Chart
+  updateFinanceChart(incomeSum, expenseSum);
+}
+
+function updateFinanceChart(income, expenses) {
+  if (financeChart) {
+    financeChart.destroy(); // Destroy existing chart before creating a new one
+  }
+
+  financeChart = new Chart(financeChartCanvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['Income', 'Expenses'],
+      datasets: [{
+        data: [income, expenses],
+        backgroundColor: ['#4CAF50', '#F44336']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
 }
 
 // Add this to check HTML structure
