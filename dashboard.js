@@ -1,159 +1,173 @@
-// Initialize variables to store financial data
-let totalIncome = 0;
-let totalExpenses = 0;
-let transactions = [];
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize variables
+    let transactions = [];
+    let totalIncome = 0;
+    let totalExpenses = 0;
+    let balance = 0;
 
-// Get references to DOM elements
-const financeForm = document.getElementById('financeForm');
-const typeInput = document.getElementById('type');
-const amountInput = document.getElementById('amount');
-const descriptionInput = document.getElementById('description');
-const totalIncomeDisplay = document.getElementById('totalIncome');
-const totalExpensesDisplay = document.getElementById('totalExpenses');
-const balanceDisplay = document.getElementById('balance');
-const transactionList = document.getElementById('transactionList');
+    // Get user ID and token from localStorage (set during login)
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
 
-// Set up API URL (Update with your backend URL if hosted)
-const API_URL = 'http://localhost:3000';  // Local development, change if deploying
-
-// Function to update the financial summary
-function updateSummary() {
-    // Calculate balance
-    const balance = totalIncome - totalExpenses;
-
-    // Update the DOM with new values
-    totalIncomeDisplay.textContent = `${totalIncome}`;
-    totalExpensesDisplay.textContent = `${totalExpenses}`;
-    balanceDisplay.textContent = `${balance}`;
-}
-
-// Function to add a transaction to the history
-async function addTransaction(type, amount, description) {
-    const username = 'user1'; // Replace with the logged-in user
-
-    const transaction = {
-        type,
-        amount,
-        description,
-        date: new Date().toLocaleString()
-    };
-
-    // Update the totals based on the transaction type
-    if (type === 'income') {
-        totalIncome += amount;
-    } else if (type === 'expense') {
-        totalExpenses += amount;
+    // If no user ID or token is found, redirect to login page
+    if (!userId || !token) {
+        window.location.href = 'loginpage.html';
+        return;
     }
 
-    // Send transaction data to the backend (MongoDB)
-    try {
-        const response = await fetch(`${API_URL}/addTransaction`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, type, amount, description })
-        });
-        const result = await response.text();
-        if (result === 'Transaction added successfully') {
-            transactions.push(transaction);  // Add transaction to local state
-            updateSummary();  // Update the financial summary
-            renderTransactions();  // Re-render transactions
-        } else {
-            alert('Failed to add transaction: ' + result);
+    // Welcome the user
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+        document.querySelector('header h1').innerHTML = `Financial Overview <span class="welcome-text">Welcome, ${userName}</span>`;
+    }
+
+    // Get DOM elements
+    const financeForm = document.getElementById('financeForm');
+    const typeSelect = document.getElementById('type');
+    const amountInput = document.getElementById('amount');
+    const descriptionInput = document.getElementById('description');
+    const totalIncomeElement = document.getElementById('totalIncome');
+    const totalExpensesElement = document.getElementById('totalExpenses');
+    const balanceElement = document.getElementById('balance');
+    const transactionList = document.getElementById('transactionList');
+
+    // Add transaction
+    financeForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const type = typeSelect.value;
+        const amount = parseFloat(amountInput.value.trim());
+        const description = descriptionInput.value.trim();
+
+        if (isNaN(amount) || amount <= 0 || !description) {
+            alert('Please enter a valid amount and description');
+            return;
         }
-    } catch (error) {
-        alert('Error while adding transaction: ' + error);
-    }
-}
 
-// Function to render transactions from MongoDB
-async function renderTransactions() {
-    // Clear the list
-    transactionList.innerHTML = '';
+        // Create transaction object
+        const transaction = { userId, type, amount, description };
 
-    // Fetch transactions from the backend
-    const username = 'user1'; // Replace with the logged-in user
-    try {
-        const response = await fetch(`${API_URL}/getTransactions/${username}`);
-        const data = await response.json();
-        transactions = data; // Update the local state with fetched transactions
-
-        // Loop through transactions and add them to the list
-        transactions.forEach(transaction => {
-            const li = document.createElement('li');
-            li.classList.add(transaction.type); // Add class for styling (income/expense)
-            li.innerHTML = `
-                <span>${transaction.description}</span>
-                <span>$${transaction.amount}</span>
-                <span>${transaction.date}</span>
-            `;
-            transactionList.appendChild(li);
-        });
-    } catch (error) {
-        alert('Error while fetching transactions: ' + error);
-    }
-}
-
-// Handle form submission
-financeForm.addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent form from submitting
-
-    // Get input values
-    const type = typeInput.value;
-    const amount = parseFloat(amountInput.value) || 0;
-    const description = descriptionInput.value.trim();
-
-    // Validate inputs
-    if (amount <= 0 || !description) {
-        alert('Please enter a valid amount and description.');
-        return;
-    }
-
-    // Add the transaction and send it to the backend
-    addTransaction(type, amount, description);
-
-    // Clear the form inputs
-    amountInput.value = '';
-    descriptionInput.value = '';
-});
-
-// Fetch initial transaction data when the page loads
-window.addEventListener('load', function () {
-    renderTransactions();
-});
-async function fetchTransactions() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("Please log in first!");
-        return;
-    }
-
-    try {
-        const response = await fetch("http://localhost:5501/get-transactions", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            const transactionList = document.getElementById("transaction-list");
-            transactionList.innerHTML = ""; // Clear existing entries
-
-            data.forEach(transaction => {
-                const listItem = document.createElement("li");
-                listItem.textContent = `${transaction.type.toUpperCase()}: ₹${transaction.amount} - ${transaction.description} (${new Date(transaction.date).toLocaleString()})`;
-                transactionList.appendChild(listItem);
+        try {
+            const response = await fetch('http://localhost:5000/transactions', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`  // Add token for authentication
+                },
+                body: JSON.stringify(transaction),
             });
-        } else {
-            alert("Error fetching transactions: " + data.error);
-        }
-    } catch (error) {
-        console.error("Error fetching transactions:", error);
-    }
-}
 
-// Call this function when the page loads to show previous transactions
-document.addEventListener("DOMContentLoaded", fetchTransactions);
+            if (!response.ok) {
+                throw new Error('Failed to save transaction');
+            }
+
+            const data = await response.json();
+            transactions.unshift(data); // Add to local array
+
+            calculateTotals();
+            updateUI();
+
+            financeForm.reset();
+            amountInput.focus();
+        } catch (error) {
+            console.error('Transaction Error:', error);
+            alert('Failed to save transaction. Please try again.');
+        }
+    });
+
+    // Fetch transactions from server
+    async function fetchTransactions() {
+        try {
+            const response = await fetch(`http://localhost:5000/transactions/${userId}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` } // Add token for authentication
+            });
+            if (!response.ok) {
+                throw new Error('Failed to load transactions');
+            }
+
+            transactions = await response.json();
+            calculateTotals();
+            updateUI();
+        } catch (error) {
+            console.error('Fetch Transactions Error:', error);
+            alert(error.message);
+        }
+    }
+
+    // Calculate totals
+    function calculateTotals() {
+        totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+        totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+        balance = totalIncome - totalExpenses;
+    }
+
+    // Update UI function
+    function updateUI() {
+        totalIncomeElement.textContent = formatCurrency(totalIncome);
+        totalExpensesElement.textContent = formatCurrency(totalExpenses);
+        balanceElement.textContent = formatCurrency(balance);
+
+        transactionList.innerHTML = transactions.length === 0
+            ? '<li>No transactions yet</li>'
+            : transactions.slice(0, 5).map(transaction => `
+                <li class="${transaction.type}">
+                    <div class="transaction-details">
+                        <div>${transaction.description}</div>
+                        <div class="transaction-description">${new Date(transaction.date || Date.now()).toLocaleDateString()}</div>
+                    </div>
+                    <div class="transaction-amount">${transaction.type === 'income' ? '+' : '-'} ${formatCurrency(transaction.amount)}</div>
+                    <button class="delete-btn" data-id="${transaction._id}">×</button>
+                </li>
+            `).join('');
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', () => deleteTransaction(button.dataset.id));
+        });
+    }
+
+    // Delete transaction
+    async function deleteTransaction(transactionId) {
+        if (!confirm('Are you sure you want to delete this transaction?')) return;
+
+        try {
+            const response = await fetch(`http://localhost:5000/transactions/${transactionId}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` } // Add token for authentication
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete transaction');
+            }
+
+            transactions = transactions.filter(t => t._id !== transactionId);
+            calculateTotals();
+            updateUI();
+        } catch (error) {
+            console.error('Delete Error:', error);
+            alert(error.message);
+        }
+    }
+
+    // Format currency function
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+    }
+
+    // Add logout button
+    function addLogoutButton() {
+        const header = document.querySelector('header');
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.className = 'logout-btn';
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'loginpage.html';
+        });
+        header.appendChild(logoutBtn);
+    }
+
+    // Initialize
+    fetchTransactions();
+    addLogoutButton();
+});

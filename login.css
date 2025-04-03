@@ -1,108 +1,87 @@
-/* General Reset */
-body, html {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    height: 100%;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-  }
-  
-  /* Container Styling */
-  .login-container {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    animation: fadeIn 1.5s ease-in-out;
-  }
-  
-  /* Heading */
-  .login-container h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #fff;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
-  }
-  
-  /* Input Fields */
-  form input {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
-  
-  form input:focus {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Button Styling */
-  form button {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #fff;
-    background: linear-gradient(90deg, #ff6a00, #ee0979);
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  form button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  form button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .login-container {
-      width: 90%;
-      padding: 30px;
-    }
-  
-    form input, form button {
-      font-size: 1rem;
-      padding: 12px;
-    }
-  }
-  
-  /* Fade-In Animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Login container styles */
+.login-container {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-container h1 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#loginForm input {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#loginForm input:focus {
+  border-color: #4CAF50;
+}
+
+#loginForm button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#loginForm button:hover {
+  background-color: #45a049;
+}
+
+/* Message styles */
+.message {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* Dashboard page styles will be loaded from dashboard.css */

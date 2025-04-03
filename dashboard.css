@@ -1,149 +1,246 @@
-/* General Styles */
+/* Dashboard container styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
 }
 
 .dashboard-container {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Sidebar Styles */
+/* Sidebar styles */
 .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: #fff;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
 }
 
 .sidebar h2 {
-    margin-top: 0;
-    font-size: 1.5rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #555;
 }
 
-.sidebar nav ul {
-    list-style: none;
-    padding: 0;
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
 }
 
-.sidebar nav ul li {
-    margin: 15px 0;
+.sidebar li {
+  margin-bottom: 10px;
 }
 
-.sidebar nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
+.sidebar a {
+  color: #ddd;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all 0.3s;
 }
 
-.sidebar nav ul li a:hover {
-    color: #1abc9c;
+.sidebar li.active a, .sidebar a:hover {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.sidebar nav ul li.active a {
-    color: #1abc9c;
-    font-weight: bold;
-}
-
-/* Main Content Styles */
+/* Main content styles */
 .main-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
+  flex: 1;
+  padding: 20px;
 }
 
-.main-content header h1 {
-    margin-top: 0;
-    font-size: 2rem;
-    color: #2c3e50;
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
 }
 
+header h1 {
+  margin: 0;
+  color: #333;
+}
+
+header h3 {
+  color: #555;
+}
+
+/* Form styles */
 .finance-form {
-    margin-bottom: 30px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .finance-form h2 {
-    font-size: 1.5rem;
-    color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-.finance-form label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
+#financeForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
 
-.finance-form select,
-.finance-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
+#financeForm label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
 }
 
-.finance-form button {
-    padding: 10px 20px;
-    background-color: #1abc9c;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+#financeForm input, #financeForm select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
-.finance-form button:hover {
-    background-color: #16a085;
+#financeForm button {
+  grid-column: span 2;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#financeForm button:hover {
+  background-color: #45a049;
+}
+
+/* Summary section styles */
+.summary {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .summary h2 {
-    font-size: 1.5rem;
-    color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .summary p {
-    font-size: 1.1rem;
-    margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
 }
 
-.summary span {
-    font-weight: bold;
-    color: #1abc9c;
+.summary p:last-child {
+  border-bottom: none;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* Transaction history styles */
+.transaction-history {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .transaction-history h2 {
-    font-size: 1.5rem;
-    color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 #transactionList {
-    list-style: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 #transactionList li {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
 }
 
-#transactionList li.income {
-    border-left: 5px solid #1abc9c;
+#transactionList li:last-child {
+  border-bottom: none;
 }
 
-#transactionList li.expense {
-    border-left: 5px solid #e74c3c;
+.transaction-info {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.description {
+  font-weight: bold;
+  color: #333;
+}
+
+.transaction.income .amount {
+  color: #4CAF50;
+}
+
+.transaction.expense .amount {
+  color: #f44336;
+}
+
+.transaction-type {
+  padding: 5px 10px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.transaction.income .transaction-type {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.transaction.expense .transaction-type {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.empty-message {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+/* Make dashboard responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+  
+  #financeForm {
+    grid-template-columns: 1fr;
+  }
+  
+  #financeForm button {
+    grid-column: 1;
+  }
 }
